@@ -1,25 +1,26 @@
-import React from 'react';
+import React from "react";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'reactstrap';
 
-export default function GenerateMazeDropdown(props){
+export default function Dropdown(props){
+    const options = props.options;
+    const header = props.header;
     const [isOpen, setIsOpen] = React.useState(false) 
     function toggle(){
-        setIsOpen(prev =>(!prev))
+        setIsOpen(!isOpen)
     }
     return(
         <ButtonDropdown
         isOpen={isOpen}
        toggle={toggle}>
        <DropdownToggle color="primary" caret>
-           Generate maze
+           {header}
        </DropdownToggle>
        <DropdownMenu>
-           <DropdownItem>
-           Kruskal's Algorithm
-           </DropdownItem>
-           <DropdownItem>
-           Recursive division
-           </DropdownItem>
+       {options.map(option => (
+                    <DropdownItem >
+                    {option}
+                    </DropdownItem>
+                ))}
        </DropdownMenu>
        </ButtonDropdown>
     );

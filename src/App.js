@@ -1,10 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
-import Panel from './components/Panel';
+import React from 'react';
+//import TopElements from './components/TopPanel/';
+import Panel from './components/Panel/Panel';
+import Canvas from './components/Canvas/Canvas';
 import "bootswatch/dist/slate/bootstrap.min.css";
+import './App.css';
+
 function App() {
   return (
-    <Panel />
+    <div>
+    <Panel/>
+    <Canvas/>
+    </div>
+    
   );
 }
 
