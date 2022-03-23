@@ -43,7 +43,7 @@ export default function Canvas(props){
     //     context.fillRect(0, 0, context.canvas.width, context.canvas.height)
     // }, [])
     return (<canvas ref={canvasRef} {...props}>
-
+            
         </canvas>)
 
 }

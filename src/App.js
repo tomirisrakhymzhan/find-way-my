@@ -6,11 +6,15 @@ import "bootswatch/dist/quartz/bootstrap.min.css";
 import './App.css';
 
 function App() {
+  const [dropdownClickInfo, setdropdownClickInfo]=React.useState({})
   return (
     <div className='app'>
 
-    <Panel/>
+    <Panel handleDropdown={setdropdownClickInfo}/>
     <Canvas/>
+    {dropdownClickInfo.header == "Generate maze" && dropdownClickInfo.option == "Depth-First-Search" && (<div>DFS</div>)}
+    {dropdownClickInfo.header == "Choose Algorithm" && (<div>ChhooseeAlggooo</div>)}
+    {dropdownClickInfo.header == "Speed" && (<div>Speeeeeed</div>)}
     </div>
     
   );
