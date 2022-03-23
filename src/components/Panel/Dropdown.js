@@ -8,6 +8,9 @@ export default function Dropdown(props){
     function toggle(){
         setIsOpen(!isOpen)
     }
+    function generateMaze(option){
+        //call maze
+    }
     return(
         <ButtonDropdown
         isOpen={isOpen}
@@ -17,7 +20,7 @@ export default function Dropdown(props){
        </DropdownToggle>
        <DropdownMenu>
        {options.map(option => (
-                    <DropdownItem >
+                    <DropdownItem  onClick={generateMaze(option)}>
                     {option}
                     </DropdownItem>
                 ))}
