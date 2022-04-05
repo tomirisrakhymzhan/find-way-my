@@ -8,7 +8,7 @@ const Canvas = () => {
 
   useEffect(() => {
     function freshBoard() {
-      const newBoard = createBoard(5, 5);
+      const newBoard = createBoard(20, 20);
       console.log(newBoard);
       setGrid(newBoard);
     }

@@ -1,16 +1,8 @@
 import React from "react";
+import './Cell.css'
 
 export default function Cell({ details }) {
-  return <div style={style.cellStyle}>{details.value}</div>;
+  return <div className={"cell"}></div>;
 }
 
-const style = {
-  cellStyle: {
-    width: 40,
-    height: 40,
-    border: "2px solid white",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-};
+
