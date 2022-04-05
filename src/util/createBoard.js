@@ -1,19 +1,19 @@
 export default (row, col) => {
-  let board = [];
+  let grid = [];
 
-  for (let x = 0; x < row; x++) {
-    let subCol = [];
-    for (let y = 0; y < col; y++) {
-      subCol.push({
-        value: 0,
-        isStart: false,
-        isEnd: false,
-        isBorder: false,
-        x: x,
-        y: y,
-      });
-    }
-    board.push(subCol);
-  }
-  return board;
+        for (let i = 0; i < row; i++) {
+            grid.push([]);
+            for (let j = 0; j < col; j++) {
+                grid[i][j] = {
+                    x: j,
+                    y: i,
+                    isWall: Math.random()<0.5,
+                    isStart: false,
+                    isFinish: false
+                };
+            }
+        }
+        
+        console.log(grid);
+        return grid;
 };
