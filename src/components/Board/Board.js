@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import createBoard from "../../util/createBoard";
 import Cell from "../Cell/Cell";
-import "./Canvas.css";
+import "./Board.css";
 
-const Canvas = () => {
+const Board = () => {
   const [grid, setGrid] = useState([]);
 
   useEffect(() => {
@@ -30,5 +30,5 @@ const Canvas = () => {
   });
 };
 
-export default Canvas;
+export default Board;
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
