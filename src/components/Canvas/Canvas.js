@@ -1,50 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import createBoard from "../../util/createBoard";
+import Cell from "../Cell/Cell";
 import "./Canvas.css";
 
-export default function Canvas(props){
-    
-    
-    const canvasRef = React.useRef(null)
-    // const draw = (ctx, frameCount) => {
-        
-    //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        
-    //     ctx.beginPath()
-    //     ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
-    //     ctx.fill()
-    // }
-      
-      React.useEffect(() => {
-        
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
-        // let frameCount = 0
-        // let animationFrameId
-        
-        // //Our draw came here
-        // const render = () => {
-        //   frameCount++
-        //   draw(context, frameCount)
-        //   animationFrameId = window.requestAnimationFrame(render)
-        // }
-        // render()
-        
-        // return () => {
-        //   window.cancelAnimationFrame(animationFrameId)
-        // }
-      })
-    // React.useEffect(()=>{
-    //     const canvas = canvasRef.current
-    //     canvas.width = 200;
-    //     canvas.height = 200;
+const Canvas = () => {
+  const [grid, setGrid] = useState([]);
 
-    //     const context = canvas.getContext('2d')
-    //     context.fillStyle = '#FFB6C1'
-    //     context.fillRect(0, 0, context.canvas.width, context.canvas.height)
-    // }, [])
-    return (<canvas ref={canvasRef} {...props}>
-            
-        </canvas>)
+  useEffect(() => {
+    function freshBoard() {
+      const newBoard = createBoard(20, 20);
+      console.log(newBoard);
+      setGrid(newBoard);
+    }
+    freshBoard();
+  }, []);
 
-}
+  if (!grid) {
+    return <div>Loading</div>;
+  }
+
+  return grid.map((singleRow) => {
+    return (
+      <div style={{ display: "flex" }}>
+        {singleRow.map((singleBlock) => {
+          return <Cell details={singleBlock} />;
+        })}
+      </div>
+    );
+  });
+};
+
+export default Canvas;
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
