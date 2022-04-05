@@ -1,11 +1,11 @@
-export default (row, col) =>{
-      let board = [];
+export default (row, col) => {
+  let board = [];
 
-  for (let x=0; x<row; x++){
+  for (let x = 0; x < row; x++) {
     let subCol = [];
-    for (let y=0; y<col; x++){
+    for (let y = 0; y < col; y++) {
       subCol.push({
-        value:0,
+        value: 0,
         isStart: false,
         isEnd: false,
         isBorder: false,
