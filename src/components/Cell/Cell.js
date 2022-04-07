@@ -8,9 +8,10 @@ export default function Cell(props) {
     isFinish,
     isStart,
     isWall,
+    visited
     
   } = props;
-  const className= "cell" + (isStart? " isStart": "") + (isFinish? " isFinish": "") + (isWall? " isWall": "")
+  const className= "cell" + (isStart? " isStart": "") + (isFinish? " isFinish": "") + (isWall? " isWall": "") + (visited? " visited": "")
   return <div className={className}></div>;
 }
 
