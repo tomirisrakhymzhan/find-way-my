@@ -7,12 +7,12 @@ export default function Panel(props) {
     
     return (
       <div>
-        <ButtonGroup className='panel--btngroup'>
+        <ButtonGroup >
           <Dropdown header="Generate maze"
                     options={["Kruskal's Algorithm", "Recursive division", "Depth-First-Search"]}
                     handleDropdown={handleDropdown}></Dropdown>
           <Dropdown header="Choose Algorithm"
-                    options={["A* start", "Breadth-depth search", "Depth-first search"]}
+                    options={["A* star", "Breadth-depth search", "Depth-first search"]}
                     handleDropdown={handleDropdown}></Dropdown>
           <Dropdown header="Speed"
                     options={["Slow", "Medium", "Fast"]}

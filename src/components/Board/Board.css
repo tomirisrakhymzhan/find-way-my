@@ -1,3 +1,10 @@
-.board {
-    border:1px solid white;
-  }
+.board{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 20px;
+}
+.grid {
+  margin-top: 20px;
+}

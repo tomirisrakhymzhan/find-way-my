@@ -1,4 +1,4 @@
-export default (rows, cols) => {
+export function createInitialBoardForDFS (rows, cols) {
     let grid = [];
     for (let i = 0; i < rows*2 + 1; i++) {
         grid.push([]);
@@ -7,10 +7,12 @@ export default (rows, cols) => {
                 grid[i][j] = {
                     x: j,
                     y: i,
-                    isWall: true,
+                    isWallToDestroy: false,
+                    isBaseWall: true,
                     isStart: false,
                     isFinish: false,
-                    visited: false
+                    visited: false,
+                    previousNode: null,
                 };
             }
         }else{
@@ -19,19 +21,23 @@ export default (rows, cols) => {
                     grid[i][j] = {
                         x: j,
                         y: i,
-                        isWall: true,
+                        isWallToDestroy: false,
+                        isBaseWall: true,
                         isStart: false,
                         isFinish: false,
-                        visited: false
+                        visited: false,
+                        previousNode: null,
                     };
                 }else{
                     grid[i][j] = {
                         x: j,
                         y: i,
-                        isWall: false,
+                        isWallToDestroy: false,
+                        isBaseWall: false,
                         isStart: false,
                         isFinish: false,
-                        visited: false
+                        visited: false,
+                        previousNode: null,
                     };
                     
                 }
@@ -39,23 +45,28 @@ export default (rows, cols) => {
         }
     }
     grid[0][1].isStart = true;
+    grid[0][1].isBaseWall = false;
     grid[rows * 2][cols * 2 - 1].isFinish = true;
+    grid[rows * 2][cols * 2 - 1].isBaseWall = false;
 
-    
-    
+    return grid;
+}
 
-    
+//apply dfs to the gridand 
+export function getVisitedCellsFromDFS(grid){
     let current = grid[1][1];
     let stack = [current];
+    let visitedCellsInOrder = []
     while(stack.length){
         current.visited = true
+        visitedCellsInOrder.push(current)
         // get possible neighbour
         let next = getNeighbour(current, grid)
-        //console.log(next)
         if(next != null){
             next.visited = true
             //destroy wall
-            destroyWall(current, next, grid)
+            let wallDestroyed = destroyWall(current, next, grid)
+            visitedCellsInOrder.push(wallDestroyed)
             //push current to stack
             stack.push(current)
             current = next
@@ -64,10 +75,9 @@ export default (rows, cols) => {
             current = stack.pop()
         }
     }
-    //console.log(grid);
-    return grid;
-};
-
+    visitedCellsInOrder.push("end")
+    return visitedCellsInOrder;
+}
 function getNeighbour(current, grid){
     let neighbours = [[current.y - 2, current.x],
                       [current.y + 2, current.x],
@@ -89,22 +99,21 @@ function destroyWall(current, next, grid){
     //compare cells on x axis
     let diffX = current.x - next.x
     if(diffX === 2){
-        grid[next.y][next.x + 1].isWall = false
-        grid[next.y][next.x + 1].visited = true
-
+        grid[next.y][next.x + 1].isWallToDestroy = true
+        return grid[next.y][next.x + 1]
     }else if(diffX === -2){
-        grid[next.y][next.x - 1].isWall = false
-        grid[next.y][next.x - 1].visited = true
+        grid[next.y][next.x - 1].isWallToDestroy = true
+        return grid[next.y][next.x - 1]
     }
     //compare cells on y axis
     let diffY = current.y - next.y
     if(diffY === 2){
-        grid[next.y + 1][next.x].isWall = false
-        grid[next.y + 1][next.x].visited = true
-
+        grid[next.y + 1][next.x].isWallToDestroy = true
+        return grid[next.y + 1][next.x]
     }else if(diffY === -2){
-        grid[next.y - 1][next.x].isWall = false
-        grid[next.y - 1][next.x].visited = true
-
+        grid[next.y - 1][next.x].isWallToDestroy = true
+        return grid[next.y - 1][next.x]
     }
 }
+export default {createInitialBoardForDFS, getVisitedCellsFromDFS}
+

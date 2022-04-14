@@ -8,7 +8,7 @@
       background-color: beige;
 
 }
-.isWall{
+.isBaseWall{
   background-color: black;
 }
 .isStart{
@@ -19,4 +19,10 @@
 }
 .visited{
   background-color: aqua;
+}
+.current{
+  background-color: brown;
+}
+.shortestPath{
+  background-color: yellow;
 }

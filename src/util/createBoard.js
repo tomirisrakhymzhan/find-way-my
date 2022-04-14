@@ -6,9 +6,10 @@ export default (row, col) => {
                 grid[i][j] = {
                     x: j,
                     y: i,
-                    isWall: false,
+                    isBaseWall: false,
                     isStart: false,
-                    isFinish: false
+                    isFinish: false,
+                    previousNode: null,
                 };
             }
         }

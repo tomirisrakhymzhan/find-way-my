@@ -7,12 +7,12 @@ export default function Cell(props) {
     y,
     isFinish,
     isStart,
-    isWall,
-    visited
+    isBaseWall,
+    //visited,
     
   } = props;
-  const className= "cell" + (isStart? " isStart": "") + (isFinish? " isFinish": "") + (isWall? " isWall": "") + (visited? " visited": "")
-  return <div className={className}></div>;
+  const className= "cell" + (isStart? " isStart": "") + (isFinish? " isFinish": "") + (isBaseWall? " isBaseWall": "") //+ (visited? " visited": "")
+  return <div id={`cell-${y}-${x}`} className={className}></div>;
 }
 
 
