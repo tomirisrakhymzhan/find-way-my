@@ -15,8 +15,8 @@ import pathfinderAstar from "../../util/pathfinderAstar";
 import "./Board.css";
 
 //constants
-const WIDTH = 21;
-const HEIGHT = 21;
+const WIDTH = 5; 
+const HEIGHT = 5;
 
 const Board = () => {
   const speedOptions=["Slow", "Medium", "Fast"]
@@ -49,9 +49,9 @@ const Board = () => {
     if(!isVisualizing){
       showMessage("Pathfinding Algorithm : Dijkstra")
       setIsVisualizing(true);
-      //clear visited cells
-      const newGrid = grid.slice();
-      for (const row of newGrid) {
+
+      const newBoard = grid.slice();
+      for (const row of newBoard) {
         for (const cell of row) {
           if(cell.visited || cell.isWallToDestroy){
             cell.visited = false;
@@ -59,26 +59,12 @@ const Board = () => {
           }
         }
       }
-
-      let visitedCellsInOrder = pathfinderDijkstra(newGrid, getStart(newGrid), getFinish(newGrid));
-      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid))
+      let visitedCellsInOrder = pathfinderDijkstra(newBoard, getStart(newBoard), getFinish(newBoard));
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newBoard))
       if (shortestPathCells.length === 1) showMessage("Path is not possible");
-      setGrid(newGrid)
+      setGrid(newBoard)
 
-      //animate visited cells
-      for(let i=0; i<visitedCellsInOrder.length; i++){
-				let cell = visitedCellsInOrder[i]
-        //after all visited cells been visualized, visualize shortest path
-        if (i===visitedCellsInOrder.length-1) {
-          timeoutID.current = setTimeout(() => {
-            visualizeShortestPath(shortestPathCells);
-            setIsVisualizing(false);
-          }, speed * i);
-        } 
-				timeoutID.current = setTimeout(() => {
-					if(!cell.isStart && !cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = 'cell visited'
-				}, speed * i)
-			}
+      visualize(visitedCellsInOrder, shortestPathCells);
 
     }
   }
@@ -86,21 +72,42 @@ const Board = () => {
   function visualizeAstarPathfinder(){
     //check if maze was generated, return if it was not
     if(!getStart(grid) && !getFinish(grid)) {
-      showMessage("First, generate maoze...");
+      showMessage("First, generate maze...");
       return;
     }
     if(!isVisualizing){
+      showMessage("Pathfinding Algorithm : A star")
       setIsVisualizing(true);
       //clear visited cells
-      const newGrid = grid.slice();
-      for (const row of newGrid) {
+      const newBoard = grid.slice();
+      for (const row of newBoard) {
         for (const cell of row) {
+          cell.distance = Infinity;
           if(cell.visited || cell.isWallToDestroy){
             cell.visited = false;
             document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
           }
         }
       }
+      // for(let i=0;i<newBoard.length;i++){
+      //   for(let j=0;j<newBoard[0].length;j++){
+      //       //if(newBoard[i][j].isBaseWall) document.getElementById(`cell-${i}-${j}`).className = "cell isBaseWall"
+      //       if(newBoard[i][j].isStart) document.getElementById(`cell-${i}-${j}`).className = "cell isStart"
+      //       if(newBoard[i][j].isFinish) document.getElementById(`cell-${i}-${j}`).className = "cell isFinish"
+      //       if(newBoard[i][j].visited || newBoard[i][j].isWallToDestroy){
+      //         newBoard[i][j].visited = false;
+      //         document.getElementById(`cell-${i}-${j}`).className = "cell";          
+
+      //       }
+      //   }
+      // }
+      let visitedCellsInOrder = pathfinderAstar(newBoard, getStart(newBoard), getFinish(newBoard));
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newBoard))
+      if (shortestPathCells.length === 1) showMessage("Path is not possible");
+      setGrid(newBoard)
+
+      visualize(visitedCellsInOrder, shortestPathCells);
+
 
     }
   }
@@ -132,23 +139,26 @@ const Board = () => {
 
       setGrid(newGrid)
 
-      //animate visited cells
-      for(let i=0; i<visitedCellsInOrder.length; i++){
-				let cell = visitedCellsInOrder[i]
-        //after all visited cells been visualized, visualize shortest path
-        if (i===visitedCellsInOrder.length-1) {
-          timeoutID.current = setTimeout(() => {
-            visualizeShortestPath(shortestPathCells);
-            setIsVisualizing(false);
-          }, speed * i);
-        } 
-				timeoutID.current = setTimeout(() => {
-					if(!cell.isStart && !cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = 'cell visited'
-				}, speed * i)
-			}
+      visualize(visitedCellsInOrder, shortestPathCells);
     }
   }
 
+  function visualize(visitedCellsInOrder, shortestPathCells){
+    //animate visited cells
+    for(let i=0; i<visitedCellsInOrder.length; i++){
+      let cell = visitedCellsInOrder[i]
+      //after all visited cells been visualized, visualize shortest path
+      if (i===visitedCellsInOrder.length-1) {
+        timeoutID.current = setTimeout(() => {
+          visualizeShortestPath(shortestPathCells);
+          setIsVisualizing(false);
+        }, speed * i);
+      } 
+      timeoutID.current = setTimeout(() => {
+        if(!cell.isStart && !cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = 'cell visited'
+      }, speed * i)
+    }
+  }
   function visualizeShortestPath(shortestPathCells){
     for(let i=1; i<shortestPathCells.length-1; i++){
       let cell = shortestPathCells[i]
