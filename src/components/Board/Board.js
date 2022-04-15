@@ -15,8 +15,10 @@ import pathfinderAstar from "../../util/pathfinderAstar";
 import "./Board.css";
 
 //constants
-const WIDTH = 5; 
-const HEIGHT = 5;
+const WIDTH = 11; 
+const HEIGHT = 11;
+const START = {x: 1, y: 0}
+const FINISH = {x: (WIDTH-2), y: (HEIGHT-1)}
 
 const Board = () => {
   const speedOptions=["Slow", "Medium", "Fast"]
@@ -36,7 +38,7 @@ const Board = () => {
   }, [])
 
   function freshBoard() {
-		const newBoard = createBoard(HEIGHT, WIDTH);
+		const newBoard = createBoard(HEIGHT, WIDTH, START, FINISH);
 		setGrid(newBoard);
 	}
 
@@ -89,18 +91,7 @@ const Board = () => {
           }
         }
       }
-      // for(let i=0;i<newBoard.length;i++){
-      //   for(let j=0;j<newBoard[0].length;j++){
-      //       //if(newBoard[i][j].isBaseWall) document.getElementById(`cell-${i}-${j}`).className = "cell isBaseWall"
-      //       if(newBoard[i][j].isStart) document.getElementById(`cell-${i}-${j}`).className = "cell isStart"
-      //       if(newBoard[i][j].isFinish) document.getElementById(`cell-${i}-${j}`).className = "cell isFinish"
-      //       if(newBoard[i][j].visited || newBoard[i][j].isWallToDestroy){
-      //         newBoard[i][j].visited = false;
-      //         document.getElementById(`cell-${i}-${j}`).className = "cell";          
-
-      //       }
-      //   }
-      // }
+      
       let visitedCellsInOrder = pathfinderAstar(newBoard, getStart(newBoard), getFinish(newBoard));
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newBoard))
       if (shortestPathCells.length === 1) showMessage("Path is not possible");
@@ -114,10 +105,10 @@ const Board = () => {
 
   function visualizeBreadthFirstSearchPathfinder(){
     //check if maze was generated, return if it was not
-    if(!getStart(grid) && !getFinish(grid)) {
-      showMessage("First, generate maze...");
-      return;
-    }
+    // if(!getStart(grid) && !getFinish(grid)) {
+    //   showMessage("First, generate maze...");
+    //   return;
+    // }
     if(!isVisualizing){
       showMessage("Pathfinding Algorithm : Breadth-First-Search")
       setIsVisualizing(true);
@@ -208,7 +199,7 @@ const Board = () => {
 
       //setting up board and applying dfs maze generation algorithm
       clearGrid()
-      const newBoard = mazeDFS.createInitialBoardForDFS((HEIGHT-1)/2, (WIDTH-1)/2)
+      const newBoard = mazeDFS.createInitialBoardForDFS(HEIGHT, WIDTH, START, FINISH)
 			let visitedCellsInOrder =mazeDFS.getVisitedCellsFromDFS(newBoard)
       for(let i=0;i<newBoard.length;i++){
         for(let j=0;j<newBoard[0].length;j++){
@@ -242,16 +233,23 @@ const Board = () => {
   function clearGrid(){
     if(!isVisualizing){
       const newGrid = grid.slice();
-      for (const row of newGrid) {
-        for (const cell of row) {
-          cell.isStart = false;
-          cell.isFinish = false;
-          cell.isBaseWall = false;
-          cell.visited = false;
-          cell.isWallToDestroy = false;
-          document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";
+      for(let i=0;i<newGrid.length;i++){
+        for(let j=0;j<newGrid[0].length;j++){
+          if(i===START.y && j===START.x)  newGrid[i][j].isStart = true;
+          else if(i===FINISH.y && j===FINISH.x)  newGrid[i][j].isFinish = true;
+          else{
+            newGrid[i][j].isStart = false;
+            newGrid[i][j].isFinish = false;
+            newGrid[i][j].isBaseWall = false;
+            newGrid[i][j].visited = false;
+            newGrid[i][j].isWallToDestroy = false;
+            document.getElementById(`cell-${i}-${j}`).className = "cell";
+          }
+          
         }
       }
+      setGrid(newGrid);
+     console.log(grid)
     }
   }
 

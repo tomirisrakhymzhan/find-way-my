@@ -1,9 +1,9 @@
-export function createInitialBoardForDFS (rows, cols) {
+export function createInitialBoardForDFS (rows, cols, start, finish) {
     let grid = [];
-    for (let i = 0; i < rows*2 + 1; i++) {
+    for (let i = 0; i < rows; i++) {
         grid.push([]);
         if(i%2==0){
-            for (let j = 0; j < cols*2 + 1; j++) {
+            for (let j = 0; j < cols; j++) {
                 grid[i][j] = {
                     x: j,
                     y: i,
@@ -14,11 +14,11 @@ export function createInitialBoardForDFS (rows, cols) {
                     visited: false,
                     previousNode: null,
                     distance: Infinity,
-                    distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
+                    distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
                 };
             }
         }else{
-            for (let j = 0; j < cols*2 + 1; j++) {
+            for (let j = 0; j < cols; j++) {
                 if(j%2==0){
                     grid[i][j] = {
                         x: j,
@@ -30,7 +30,7 @@ export function createInitialBoardForDFS (rows, cols) {
                         visited: false,
                         previousNode: null,
                         distance: Infinity,
-                        distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
+                        distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
                     };
                 }else{
                     grid[i][j] = {
@@ -43,17 +43,18 @@ export function createInitialBoardForDFS (rows, cols) {
                         visited: false,
                         previousNode: null,
                         distance: Infinity,
-                        distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
+                        distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
                     };
                 }
             }
         }
     }
-    grid[0][1].isStart = true;
-    grid[0][1].isBaseWall = false;
-    grid[rows * 2][cols * 2 - 1].isFinish = true;
-    grid[rows * 2][cols * 2 - 1].isBaseWall = false;
-
+    //grid[0][1].isStart = true;
+    grid[start.y][start.x].isStart = true;
+    grid[start.y][start.x].isBaseWall = false;
+    grid[finish.y][finish.x].isFinish = true;
+    grid[finish.y][finish.x].isBaseWall = false;
+    console.log(grid)
     return grid;
 }
 
