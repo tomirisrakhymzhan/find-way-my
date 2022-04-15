@@ -9,12 +9,14 @@ import Dropdown from "../Panel/Dropdown";
 import createBoard from "../../util/createBoard";
 import mazeDFS from "../../util/mazeDFS";
 import pathfinderBFS from "../../util/pathfinderBFS";
+import pathfinderDijkstra from "../../util/pathfinderDijkstra";
+import pathfinderAstar from "../../util/pathfinderAstar";
 //styles
 import "./Board.css";
 
 //constants
-const WIDTH = 11;
-const HEIGHT = 11;
+const WIDTH = 21;
+const HEIGHT = 21;
 
 const Board = () => {
   const speedOptions=["Slow", "Medium", "Fast"]
@@ -38,11 +40,53 @@ const Board = () => {
 		setGrid(newBoard);
 	}
 
-  function visualizeBreadthFirstSearchPathfinder(){
-
+  function visualizeDijkstraPathfinder(){
     //check if maze was generated, return if it was not
-    if(!getStartNode(grid) && !getFinishNode(grid)) {
+    if(!getStart(grid) && !getFinish(grid)) {
       showMessage("First, generate maze...");
+      return;
+    }
+    if(!isVisualizing){
+      showMessage("Pathfinding Algorithm : Dijkstra")
+      setIsVisualizing(true);
+      //clear visited cells
+      const newGrid = grid.slice();
+      for (const row of newGrid) {
+        for (const cell of row) {
+          if(cell.visited || cell.isWallToDestroy){
+            cell.visited = false;
+            document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
+          }
+        }
+      }
+
+      let visitedCellsInOrder = pathfinderDijkstra(newGrid, getStart(newGrid), getFinish(newGrid));
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid))
+      if (shortestPathCells.length === 1) showMessage("Path is not possible");
+      setGrid(newGrid)
+
+      //animate visited cells
+      for(let i=0; i<visitedCellsInOrder.length; i++){
+				let cell = visitedCellsInOrder[i]
+        //after all visited cells been visualized, visualize shortest path
+        if (i===visitedCellsInOrder.length-1) {
+          timeoutID.current = setTimeout(() => {
+            visualizeShortestPath(shortestPathCells);
+            setIsVisualizing(false);
+          }, speed * i);
+        } 
+				timeoutID.current = setTimeout(() => {
+					if(!cell.isStart && !cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = 'cell visited'
+				}, speed * i)
+			}
+
+    }
+  }
+
+  function visualizeAstarPathfinder(){
+    //check if maze was generated, return if it was not
+    if(!getStart(grid) && !getFinish(grid)) {
+      showMessage("First, generate maoze...");
       return;
     }
     if(!isVisualizing){
@@ -58,17 +102,39 @@ const Board = () => {
         }
       }
 
+    }
+  }
+
+  function visualizeBreadthFirstSearchPathfinder(){
+    //check if maze was generated, return if it was not
+    if(!getStart(grid) && !getFinish(grid)) {
+      showMessage("First, generate maze...");
+      return;
+    }
+    if(!isVisualizing){
+      showMessage("Pathfinding Algorithm : Breadth-First-Search")
+      setIsVisualizing(true);
+      //clear visited cells
+      const newGrid = grid.slice();
+      for (const row of newGrid) {
+        for (const cell of row) {
+          if(cell.visited || cell.isWallToDestroy){
+            cell.visited = false;
+            document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
+          }
+        }
+      }
+
       //apply bfs pathfinder
-      let visitedCellsInOrder = pathfinderBFS(newGrid, getStartNode(newGrid), getFinishNode(newGrid))
+      let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid))
       //get nodes of shortest path backtracking from finish node
-      let shortestPathCells = getNodesInShortestPathOrder(getFinishNode(newGrid))
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid))
 
       setGrid(newGrid)
 
       //animate visited cells
       for(let i=0; i<visitedCellsInOrder.length; i++){
 				let cell = visitedCellsInOrder[i]
-
         //after all visited cells been visualized, visualize shortest path
         if (i===visitedCellsInOrder.length-1) {
           timeoutID.current = setTimeout(() => {
@@ -91,8 +157,8 @@ const Board = () => {
       }, speed * i)
     }
   }
-  
-  function getStartNode(grid){
+
+  function getStart(grid){
     for(let i=0;i<grid.length;i++){
       for(let j=0;j<grid[0].length;j++){
           if(grid[i][j].isStart) return grid[i][j]
@@ -102,7 +168,7 @@ const Board = () => {
     return null;
   }
 
-  function getFinishNode(grid){
+  function getFinish(grid){
     for(let i=0;i<grid.length;i++){
       for(let j=0;j<grid[0].length;j++){
           if(grid[i][j].isFinish) return grid[i][j]
@@ -141,11 +207,9 @@ const Board = () => {
             if(newBoard[i][j].isFinish) document.getElementById(`cell-${i}-${j}`).className = "cell isFinish"
             if(newBoard[i][j].isBaseWall && newBoard[i][j].isWallToDestroy) newBoard[i][j].isBaseWall = false;
             if(newBoard[i][j].isBaseWall && !newBoard[i][j].isWallToDestroy) newBoard[i][j].isBaseWall = true;
-            
         }
       }
 			setGrid(newBoard)
-
       //animation is here
 			for(let i=0; i<visitedCellsInOrder.length; i++){
 				let cell = visitedCellsInOrder[i]
@@ -196,7 +260,9 @@ const Board = () => {
         <div className="board">
           <ButtonGroup>
             <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}/>
-            <PathfindingAlgorithmDropdown handleBFSPathfinder={visualizeBreadthFirstSearchPathfinder} />
+            <PathfindingAlgorithmDropdown handleBFSPathfinder={visualizeBreadthFirstSearchPathfinder}
+                                          handleAstarPathfinder={visualizeAstarPathfinder}
+                                          handleDijkstraPathfinder={visualizeDijkstraPathfinder} />
             <Dropdown header={dropdownSpeedHeader}
                       options={speedOptions}
                       handleDropdown={handleSpeed}/>

@@ -4,6 +4,9 @@ import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'rea
 export default function PathfindingAlgorithmDropdown(props){
     const [isOpen, setIsOpen] = React.useState(false) 
     var handleBFSPathfinder = props.handleBFSPathfinder;
+    var handleAstarPathfinder = props.handleAstarPathfinder;
+    var handleDijkstraPathfinder = props.handleDijkstraPathfinder;
+
     function toggle(){
         setIsOpen(!isOpen)
     }
@@ -23,6 +26,9 @@ export default function PathfindingAlgorithmDropdown(props){
                                 </DropdownItem>
                             ))} */}
                     <DropdownItem onClick={()=>{handleBFSPathfinder()}}>Breadth-First search</DropdownItem>
+                    <DropdownItem onClick={()=>{handleDijkstraPathfinder()}}>Dijkstra search</DropdownItem>
+                    <DropdownItem onClick={()=>{handleAstarPathfinder()}}>A star search</DropdownItem>
+
                 </DropdownMenu>
             </ButtonDropdown>
        

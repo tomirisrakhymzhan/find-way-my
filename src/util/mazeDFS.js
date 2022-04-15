@@ -13,6 +13,8 @@ export function createInitialBoardForDFS (rows, cols) {
                     isFinish: false,
                     visited: false,
                     previousNode: null,
+                    distance: Infinity,
+                    distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
                 };
             }
         }else{
@@ -27,6 +29,8 @@ export function createInitialBoardForDFS (rows, cols) {
                         isFinish: false,
                         visited: false,
                         previousNode: null,
+                        distance: Infinity,
+                        distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
                     };
                 }else{
                     grid[i][j] = {
@@ -38,6 +42,8 @@ export function createInitialBoardForDFS (rows, cols) {
                         isFinish: false,
                         visited: false,
                         previousNode: null,
+                        distance: Infinity,
+                        distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
                     };
                     
                 }
