@@ -226,6 +226,10 @@ const Board = () => {
 		}
 	}
 
+  function visualizeRandomMaze() {
+
+  }
+
   function clearGrid(){
     if(!isVisualizing){
       const newGrid = grid.slice();
@@ -267,7 +271,8 @@ const Board = () => {
   return( 
         <div className="board">
           <ButtonGroup>
-            <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}/>
+            <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}
+                                  handleRandomMaze={visualizeRandomMaze}/>
             <PathfindingAlgorithmDropdown handleBFSPathfinder={visualizeBreadthFirstSearchPathfinder}
                                           handleAstarPathfinder={visualizeAstarPathfinder}
                                           handleDijkstraPathfinder={visualizeDijkstraPathfinder} />

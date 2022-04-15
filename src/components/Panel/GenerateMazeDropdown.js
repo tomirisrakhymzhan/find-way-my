@@ -4,6 +4,7 @@ import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'rea
 export default function GenerateMazeDropdown(props){
     const [isOpen, setIsOpen] = React.useState(false) 
     var handleDFSMaze = props.handleDFSMaze;
+    var handleRandomMaze = props.handleRandomMaze;
     function toggle(){
         setIsOpen(!isOpen)
     }
@@ -23,6 +24,7 @@ export default function GenerateMazeDropdown(props){
                                 </DropdownItem>
                             ))} */}
                     <DropdownItem onClick={()=> {handleDFSMaze()}}>Depth-First-Search</DropdownItem>
+                    <DropdownItem onClick={()=> {handleRandomMaze()}}>Random Maze</DropdownItem>
                 </DropdownMenu>
             </ButtonDropdown>
         
