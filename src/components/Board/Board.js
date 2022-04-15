@@ -232,6 +232,10 @@ const Board = () => {
 		}
 	}
 
+  function visualizeRandomMaze() {
+
+  }
+
   function clearGrid(){
     if(!isVisualizing){
       showMessage("Cleared the grid...")
@@ -280,7 +284,8 @@ const Board = () => {
   return( 
         <div className="board">
           <ButtonGroup>
-            <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}/>
+            <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}
+                                  handleRandomMaze={visualizeRandomMaze}/>
             <PathfindingAlgorithmDropdown handleBFSPathfinder={visualizeBreadthFirstSearchPathfinder}
                                           handleAstarPathfinder={visualizeAstarPathfinder}
                                           handleDijkstraPathfinder={visualizeDijkstraPathfinder} />
