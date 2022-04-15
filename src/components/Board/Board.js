@@ -59,6 +59,8 @@ const Board = () => {
             cell.visited = false;
             document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
           }
+          if(cell.isStart) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isStart";  
+          if(cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isFinish"; 
         }
       }
       let visitedCellsInOrder = pathfinderDijkstra(newBoard, getStart(newBoard), getFinish(newBoard));
@@ -80,7 +82,7 @@ const Board = () => {
     if(!isVisualizing){
       showMessage("Pathfinding Algorithm : A star")
       setIsVisualizing(true);
-      //clear visited cells
+      //clear cells
       const newBoard = grid.slice();
       for (const row of newBoard) {
         for (const cell of row) {
@@ -89,6 +91,8 @@ const Board = () => {
             cell.visited = false;
             document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
           }
+          if(cell.isStart) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isStart";  
+          if(cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isFinish";  
         }
       }
       
@@ -120,6 +124,8 @@ const Board = () => {
             cell.visited = false;
             document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell";          
           }
+          if(cell.isStart) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isStart";  
+          if(cell.isFinish) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isFinish"; 
         }
       }
 
@@ -228,11 +234,18 @@ const Board = () => {
 
   function clearGrid(){
     if(!isVisualizing){
+      showMessage("Cleared the grid...")
       const newGrid = grid.slice();
       for(let i=0;i<newGrid.length;i++){
         for(let j=0;j<newGrid[0].length;j++){
-          if(i===START.y && j===START.x)  newGrid[i][j].isStart = true;
-          else if(i===FINISH.y && j===FINISH.x)  newGrid[i][j].isFinish = true;
+          if(i===START.y && j===START.x)  {
+            newGrid[i][j].isStart = true;
+            document.getElementById(`cell-${i}-${j}`).className = "cell isStart";
+          }
+          else if(i===FINISH.y && j===FINISH.x)  {
+            newGrid[i][j].isFinish = true;
+            document.getElementById(`cell-${i}-${j}`).className = "cell isFinish";
+          }
           else{
             newGrid[i][j].isStart = false;
             newGrid[i][j].isFinish = false;
