@@ -45,7 +45,6 @@ export function createInitialBoardForDFS (rows, cols) {
                         distance: Infinity,
                         distanceToFinishNode: Math.abs(rows * 2 - i) + Math.abs(cols * 2 - 1 - j)
                     };
-                    
                 }
             }
         }
@@ -58,7 +57,7 @@ export function createInitialBoardForDFS (rows, cols) {
     return grid;
 }
 
-//apply dfs to the gridand 
+//apply dfs to the grid 
 export function getVisitedCellsFromDFS(grid){
     let current = grid[1][1];
     let stack = [current];
