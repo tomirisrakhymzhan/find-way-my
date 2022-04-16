@@ -1,50 +1,21 @@
+import createCell from "./createCell";
 export function createInitialBoardForDFS (rows, cols, start, finish) {
     let grid = [];
     for (let i = 0; i < rows; i++) {
         grid.push([]);
         if(i%2==0){
             for (let j = 0; j < cols; j++) {
-                grid[i][j] = {
-                    x: j,
-                    y: i,
-                    isWallToDestroy: false,
-                    isBaseWall: true,
-                    isStart: false,
-                    isFinish: false,
-                    visited: false,
-                    previousNode: null,
-                    distance: Infinity,
-                    distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
-                };
+                grid[i][j] = createCell(i, j, finish);
+                grid[i][j].isBaseWall = true;
             }
         }else{
             for (let j = 0; j < cols; j++) {
                 if(j%2==0){
-                    grid[i][j] = {
-                        x: j,
-                        y: i,
-                        isWallToDestroy: false,
-                        isBaseWall: true,
-                        isStart: false,
-                        isFinish: false,
-                        visited: false,
-                        previousNode: null,
-                        distance: Infinity,
-                        distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
-                    };
+                    grid[i][j] = createCell(i, j, finish);
+                    grid[i][j].isBaseWall = true;
+
                 }else{
-                    grid[i][j] = {
-                        x: j,
-                        y: i,
-                        isWallToDestroy: false,
-                        isBaseWall: false,
-                        isStart: false,
-                        isFinish: false,
-                        visited: false,
-                        previousNode: null,
-                        distance: Infinity,
-                        distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
-                    };
+                    grid[i][j] = createCell(i, j, finish);
                 }
             }
         }
@@ -60,42 +31,42 @@ export function createInitialBoardForDFS (rows, cols, start, finish) {
 export function getVisitedCellsFromDFS(grid){
     let current = grid[1][1];
     let stack = [current];
-    let visitedCellsInOrder = []
+    let visitedCellsInOrder = [];
     while(stack.length){
-        current.visited = true
-        visitedCellsInOrder.push(current)
+        current.visited = true;
+        visitedCellsInOrder.push(current);
         // get possible neighbour
-        let next = getNeighbour(current, grid)
+        let next = getNeighbour(current, grid);
         if(next != null){
-            next.visited = true
+            next.visited = true;
             //destroy wall
-            let wallDestroyed = destroyWall(current, next, grid)
-            visitedCellsInOrder.push(wallDestroyed)
+            let wallDestroyed = destroyWall(current, next, grid);
+            visitedCellsInOrder.push(wallDestroyed);
             //push current to stack
-            stack.push(current)
-            current = next
+            stack.push(current);
+            current = next;
         }else{
             // if no neighbours found, start backtracking using the stack 
-            current = stack.pop()
+            current = stack.pop();
         }
     }
-    visitedCellsInOrder.push("end")
+    visitedCellsInOrder.push("end");
     return visitedCellsInOrder;
 }
 function getNeighbour(current, grid){
     let neighbours = [[current.y - 2, current.x],
                       [current.y + 2, current.x],
                       [current.y, current.x+2],
-                      [current.y, current.x-2]]
+                      [current.y, current.x-2]];
     let notVisited = neighbours.filter(c => (
                                               c[0] > 0 && c[1] > 0
                                               && c[0] < grid.length && c[1] < grid[0].length
                                               && !grid[c[0]][c[1]].visited
-                                            ))
+                                            ));
     if(notVisited.length){
         let rndNeighborPosition = notVisited[Math.floor(Math.random() * notVisited.length)];
-        let rndNeighbor = grid[rndNeighborPosition[0]][rndNeighborPosition[1]]
-        return rndNeighbor
+        let rndNeighbor = grid[rndNeighborPosition[0]][rndNeighborPosition[1]];
+        return rndNeighbor;
     }else return null;
 }
 
