@@ -30,6 +30,10 @@ const Board = () => {
   const [speed, setSpeed] = useState(5)
   const [grid, setGrid] = useState([]);
   const [isVisualizing, setIsVisualizing] = useState(false);
+  const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const [mainIsPressed, setMainIsPressed] = useState("");
+  const [start, setStart] = useState([START.y, START.x]);
+  const [finish, setFinish] = useState([FINISH.y, FINISH.x]);
   const timeoutID = useRef(null);
 
   useEffect(()=>{
@@ -65,10 +69,17 @@ const Board = () => {
       let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      //update the grid state
-      setGrid(newGrid);
-      //visualize the algorithm
-      visualize(visitedCellsInOrder, shortestPathCells);
+      //check if path is possible
+      if(visitedCellsInOrder === null || shortestPathCells === null){
+        setExtraMessage("Path is not possible...");
+        return;
+      }else{
+        //update the grid state
+        setGrid(newGrid);
+        //visualize the algorithm
+        visualize(visitedCellsInOrder, shortestPathCells);
+      }
+      
     }
   }
   function visualizeDepthFirstSearchPathfinder(){
@@ -146,6 +157,9 @@ const Board = () => {
         // if a wall was destroyed in dfs maze generation (i.e. it is both BaseWall and WallToDestroy), then remove the 
         // isBaseWall property
         if(cell.isBaseWall && cell.isWallToDestroy) cell.isBaseWall = false;
+        // explicitly change wall colors
+        if(cell.isBaseWall) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell isBaseWall"
+        if(cell.isWallToDestroy) document.getElementById(`cell-${cell.y}-${cell.x}`).className = "cell"
       }
     }
   }
@@ -283,7 +297,114 @@ const Board = () => {
     if(dropdownInfo.option === "Extra-Fast") setSpeed(5);
 
   }
+//-------------------------------------------------Mouse events functionality-------------------------------------------------------//
 
+  function handleMouseDown(y, x){
+    const cell = grid[y][x];
+    if (cell.isStart === true && cell.isFinish === false) {
+      setMainIsPressed("start")      
+      cell.isStart = false;
+    }
+    if (cell.isStart === false && cell.isFinish === true) {
+      setMainIsPressed("finish")      
+      cell.isFinish = false;
+    }
+    if (mainIsPressed === "") {
+      const newGrid = gridWithWallToggled(grid, y, x);
+      setGrid(newGrid);
+      setMouseIsPressed(true);
+    }
+  }
+  function handleMouseEnter(y, x){
+    if (mainIsPressed === "start") {
+      const newGrid = gridDynamicNodes(grid, y, x, "start");
+      setGrid(newGrid);
+    }
+    if (mainIsPressed === "finish") {
+      const newGrid = gridDynamicNodes(grid, y, x, "finish");
+      setGrid(newGrid);
+    }
+    if (mouseIsPressed && mainIsPressed === "") {
+        const newGrid = gridWithWallToggled(grid, y, x);
+        setGrid(newGrid);
+        setMouseIsPressed(true);
+    }
+  }
+
+  function handleMouseUp(y, x){
+    if (mainIsPressed === "start") {
+      setMainIsPressed("");
+      const newGrid = gridDynamicNodes(grid, y, x, "start");
+      setMainIsPressed("");
+      setStart([y, x]);
+      setGrid(newGrid);
+    }
+    if (mainIsPressed === "finish") {
+      const newGrid = gridDynamicNodes(grid, y, x, "finish");
+      setMainIsPressed("");
+      setFinish([y, x]);
+      setGrid(newGrid);
+    }
+    setMouseIsPressed(false);
+  }
+
+  function handleMouseLeave(y, x){
+    if (mainIsPressed === "")
+        return;
+    let newGrid = grid.slice();
+    const cell = newGrid[y][x];
+    if (mainIsPressed === "start") {
+        const newCell = {
+            ...cell,
+            isStart: false,
+            isBaseWall: false
+        }
+        newGrid[y][x] = newCell;
+    }
+    if (mainIsPressed === "finish") {
+        const newCell = {
+            ...cell,
+            isFinish: false,
+            isBaseWall: false
+        }
+        newGrid[y][x] = newCell;
+    }
+    setGrid(newGrid);
+  }
+  
+  // updating the grid, when the walls are tiggered
+  function gridWithWallToggled(grid, y, x){
+    let newGrid = grid.slice();
+    const cell = newGrid[y][x];
+    const newCell = {
+        ...cell,
+        isBaseWall: !cell.isBaseWall
+    }
+    newGrid[y][x] = newCell;
+    return newGrid;
+  }
+  function gridDynamicNodes(grid, y, x, pos){
+    let newGrid = grid.slice();
+    const cell = newGrid[y][x];
+    if (pos === "start") {
+        const newCell = {
+            ...cell,
+            isStart: true
+        }
+        newGrid[y][x] = newCell;
+    }
+    if (pos === "finish") {
+        const newCell = {
+            ...cell,
+            isFinish: true
+        }
+        newGrid[y][x] = newCell;
+    }
+    return newGrid;
+}
+
+
+//-------------------------------------------------Returned component rendering-------------------------------------------------------//
   if (!grid) {
     return <div>Loading</div>;
   }
@@ -314,7 +435,12 @@ const Board = () => {
                               y={y}
                               isFinish={isFinish}
                               isStart={isStart}
-                              isBaseWall={isBaseWall} />;
+                              isBaseWall={isBaseWall} 
+                              mouseIsPressed={mouseIsPressed}
+                              onMouseDown={(y, x) => handleMouseDown(y, x)}
+                              onMouseEnter={(y, x) => handleMouseEnter(y, x)}
+                              onMouseUp={(y,x) => handleMouseUp(y, x)}
+                              onMouseLeave={(y, x) => handleMouseLeave(y, x)}/>;
                 })}
               </div>);
             })}
