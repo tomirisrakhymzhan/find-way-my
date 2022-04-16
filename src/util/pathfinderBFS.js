@@ -45,6 +45,5 @@ export default (grid, startNode, finishNode) => {
             }
         }
     }
-    // return visitedNodesInOrder;
-  }
+}
   

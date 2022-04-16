@@ -25,8 +25,8 @@ export default (grid, startNode, finishNode) => {
 
 function updateUnvisitedNeighbours(node, grid){
     const unvisitedNeighbors = getUnvisitedNeighbours(node, grid);
-  for (const neighbor of unvisitedNeighbors) {
-    neighbor.distance = node.distance + 1 + neighbor.distanceToFinishNode;
-    neighbor.previousNode = node;
-  }
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.distance = node.distance + 1 + neighbor.distanceToFinishNode;
+        neighbor.previousNode = node;
+    }
 }

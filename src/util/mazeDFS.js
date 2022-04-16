@@ -14,7 +14,7 @@ export function createInitialBoardForDFS (rows, cols, start, finish) {
                     visited: false,
                     previousNode: null,
                     distance: Infinity,
-                    distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
+                    distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
                 };
             }
         }else{
@@ -30,7 +30,7 @@ export function createInitialBoardForDFS (rows, cols, start, finish) {
                         visited: false,
                         previousNode: null,
                         distance: Infinity,
-                        distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
+                        distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
                     };
                 }else{
                     grid[i][j] = {
@@ -43,18 +43,16 @@ export function createInitialBoardForDFS (rows, cols, start, finish) {
                         visited: false,
                         previousNode: null,
                         distance: Infinity,
-                        distanceToFinishNode: Math.abs(rows - 1 - i) + Math.abs(cols - 2 - j)
+                        distanceToFinishNode: Math.abs(finish.y - i) + Math.abs(finish.x - j)
                     };
                 }
             }
         }
     }
-    //grid[0][1].isStart = true;
     grid[start.y][start.x].isStart = true;
     grid[start.y][start.x].isBaseWall = false;
     grid[finish.y][finish.x].isFinish = true;
     grid[finish.y][finish.x].isBaseWall = false;
-    console.log(grid)
     return grid;
 }
 
@@ -103,22 +101,22 @@ function getNeighbour(current, grid){
 
 function destroyWall(current, next, grid){
     //compare cells on x axis
-    let diffX = current.x - next.x
+    let diffX = current.x - next.x;
     if(diffX === 2){
-        grid[next.y][next.x + 1].isWallToDestroy = true
-        return grid[next.y][next.x + 1]
+        grid[next.y][next.x + 1].isWallToDestroy = true;
+        return grid[next.y][next.x + 1];
     }else if(diffX === -2){
-        grid[next.y][next.x - 1].isWallToDestroy = true
-        return grid[next.y][next.x - 1]
+        grid[next.y][next.x - 1].isWallToDestroy = true;
+        return grid[next.y][next.x - 1];
     }
     //compare cells on y axis
-    let diffY = current.y - next.y
+    let diffY = current.y - next.y;
     if(diffY === 2){
-        grid[next.y + 1][next.x].isWallToDestroy = true
-        return grid[next.y + 1][next.x]
+        grid[next.y + 1][next.x].isWallToDestroy = true;
+        return grid[next.y + 1][next.x];
     }else if(diffY === -2){
-        grid[next.y - 1][next.x].isWallToDestroy = true
-        return grid[next.y - 1][next.x]
+        grid[next.y - 1][next.x].isWallToDestroy = true;
+        return grid[next.y - 1][next.x];
     }
 }
 export default {createInitialBoardForDFS, getVisitedCellsFromDFS}

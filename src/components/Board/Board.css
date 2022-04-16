@@ -3,8 +3,15 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin: 20px;
+  margin: 30px;
 }
 .grid {
   margin-top: 20px;
+}
+.grid-row{
+  display: flex;
+}
+#board-message{
+  margin-top: 30px;
+  color: beige;
 }
