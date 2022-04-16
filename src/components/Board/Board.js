@@ -65,21 +65,30 @@ const Board = () => {
       //prepare grid for the algorithm application
       const newGrid = grid.slice();
       prepareGridForAlgorithms(newGrid);  
+
+      // try{
+      //   //apply bfs pathfinder
+      //   let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
+      //   //get nodes of shortest path backtracking from finish node
+      //   let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
+      // }catch{
+
+      // }
       //apply bfs pathfinder
       let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
       //check if path is possible
-      if(visitedCellsInOrder === null || shortestPathCells === null){
+      if(visitedCellsInOrder === undefined){
         setExtraMessage("Path is not possible...");
+        setIsVisualizing(false);
         return;
       }else{
         //update the grid state
         setGrid(newGrid);
         //visualize the algorithm
         visualize(visitedCellsInOrder, shortestPathCells);
-      }
-      
+      } 
     }
   }
   function visualizeDepthFirstSearchPathfinder(){
@@ -94,10 +103,17 @@ const Board = () => {
       let visitedCellsInOrder = pathfinderDFS(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      //update the grid state
-      setGrid(newGrid);
-      //visualize the algorithm
-      visualize(visitedCellsInOrder, shortestPathCells);
+      //check if path is possible
+      if(visitedCellsInOrder === undefined){
+        setExtraMessage("Path is not possible...");
+        setIsVisualizing(false);
+        return;
+      }else{
+        //update the grid state
+        setGrid(newGrid);
+        //visualize the algorithm
+        visualize(visitedCellsInOrder, shortestPathCells);
+      }
     }
   }
 
@@ -113,11 +129,17 @@ const Board = () => {
       let visitedCellsInOrder = pathfinderDijkstra(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      //update the grid state
-      setGrid(newGrid);
-      //visualize the algorithm
-      visualize(visitedCellsInOrder, shortestPathCells);
-
+      //check if path is possible
+      if(visitedCellsInOrder === undefined){
+        setExtraMessage("Path is not possible...");
+        setIsVisualizing(false);
+        return;
+      }else{
+        //update the grid state
+        setGrid(newGrid);
+        //visualize the algorithm
+        visualize(visitedCellsInOrder, shortestPathCells);
+      }
     }
   }
 
@@ -133,10 +155,17 @@ const Board = () => {
       let visitedCellsInOrder = pathfinderAstar(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      //update the grid state
-      setGrid(newGrid);
-      //visualize the algorithm
-      visualize(visitedCellsInOrder, shortestPathCells);
+      //check if path is possible
+      if(visitedCellsInOrder === undefined){
+        setExtraMessage("Path is not possible...");
+        setIsVisualizing(false);
+        return;
+      }else{
+        //update the grid state
+        setGrid(newGrid);
+        //visualize the algorithm
+        visualize(visitedCellsInOrder, shortestPathCells);
+      }
     }
   }
 
