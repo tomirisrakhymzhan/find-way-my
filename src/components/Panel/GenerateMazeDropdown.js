@@ -8,7 +8,6 @@ export default function GenerateMazeDropdown(props){
     function toggle(){
         setIsOpen(!isOpen)
     }
-    //const options=["Kruskal's Algorithm", "Recursive division", "Depth-First-Search"]
     return(
         
             <ButtonDropdown
@@ -18,11 +17,6 @@ export default function GenerateMazeDropdown(props){
                     Generate Maze
                 </DropdownToggle>
                 <DropdownMenu>
-                {/* {options.map(option => (
-                                <DropdownItem onClick={()=>{handleDropdown(option)}}>
-                                {option}
-                                </DropdownItem>
-                            ))} */}
                     <DropdownItem onClick={()=> {handleDFSMaze()}}>Depth-First-Search</DropdownItem>
                     <DropdownItem onClick={()=> {handleRandomMaze()}}>Random Maze</DropdownItem>
                 </DropdownMenu>

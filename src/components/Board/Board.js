@@ -11,6 +11,7 @@ import mazeDFS from "../../util/mazeDFS";
 import pathfinderBFS from "../../util/pathfinderBFS";
 import pathfinderDijkstra from "../../util/pathfinderDijkstra";
 import pathfinderAstar from "../../util/pathfinderAstar";
+import pathfinderDFS from "../../util/pathfinderDFS";
 //styles
 import "./Board.css";
 
@@ -21,9 +22,12 @@ const START = {x: 1, y: 0}
 const FINISH = {x: (WIDTH-2), y: (HEIGHT-1)}
 
 const Board = () => {
-  const speedOptions=["Slow", "Medium", "Fast"]
-  const [dropdownSpeedHeader, setdropdownSpeedHeader] = useState("Speed: Fast");
-  const [speed, setSpeed] = useState(10)
+  const speedOptions=["Slow", "Medium", "Fast", "Extra-Fast"]
+  const [dropdownSpeedHeader, setdropdownSpeedHeader] = useState("Speed: Extra-Fast");
+  const [message, setMessage] = useState("Maze Generator and Pathfinder Tool!");
+  const [extraMessage, setExtraMessage] = useState('');
+  const [boardVisualizationMessage, setBoardVisualizationMessage] = useState('');
+  const [speed, setSpeed] = useState(5)
   const [grid, setGrid] = useState([]);
   const [isVisualizing, setIsVisualizing] = useState(false);
   const timeoutID = useRef(null);
@@ -39,14 +43,57 @@ const Board = () => {
     };
   }, [])
 
+  useEffect(()=>{
+    //when isVisualizing state is changed, change extra message accordingly
+    isVisualizing?setBoardVisualizationMessage("Board is being visualized..."):setBoardVisualizationMessage('');
+  }, [isVisualizing])
+
   function freshBoard() {
 		const newBoard = createBoard(HEIGHT, WIDTH, START, FINISH);
 		setGrid(newBoard);
 	}
 //-------------------------------------------------Pathfinders related functionality-------------------------------------------------------//
+  function visualizeBreadthFirstSearchPathfinder(){
+    if(!isVisualizing){
+      setMessage("Pathfinding Algorithm : Breadth-First-Search");
+      setExtraMessage("Breadth-First-Search is unweighted and guarantees shortest path")
+      setIsVisualizing(true);
+      //prepare grid for the algorithm application
+      const newGrid = grid.slice();
+      prepareGridForAlgorithms(newGrid);  
+      //apply bfs pathfinder
+      let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
+      //get nodes of shortest path backtracking from finish node
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
+      //update the grid state
+      setGrid(newGrid);
+      //visualize the algorithm
+      visualize(visitedCellsInOrder, shortestPathCells);
+    }
+  }
+  function visualizeDepthFirstSearchPathfinder(){
+    if(!isVisualizing){
+      setMessage("Pathfinding Algorithm : Depth-First-Search");
+      setExtraMessage("Depth-First-Search is unweighted and does NOT guarantee shortest path")
+      setIsVisualizing(true);
+      //prepare grid for the algorithm application
+      const newGrid = grid.slice();
+      prepareGridForAlgorithms(newGrid);  
+      //apply bfs pathfinder
+      let visitedCellsInOrder = pathfinderDFS(newGrid, getStart(newGrid), getFinish(newGrid));
+      //get nodes of shortest path backtracking from finish node
+      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
+      //update the grid state
+      setGrid(newGrid);
+      //visualize the algorithm
+      visualize(visitedCellsInOrder, shortestPathCells);
+    }
+  }
+
   function visualizeDijkstraPathfinder(){
     if(!isVisualizing){
-      showMessage("Pathfinding Algorithm : Dijkstra")
+      setMessage("Pathfinding Algorithm : Dijkstra")
+      setExtraMessage("Dijkstra is weighted and guarantees shortest path")
       setIsVisualizing(true);
       //prepare grid for the algorithm application
       const newGrid = grid.slice();
@@ -65,31 +112,14 @@ const Board = () => {
 
   function visualizeAstarPathfinder(){
     if(!isVisualizing){
-      showMessage("Pathfinding Algorithm : A-star")
+      setMessage("Pathfinding Algorithm : A-star")
+      setExtraMessage("A-star is weighted and guarantees shortest path")
       setIsVisualizing(true);
       //prepare grid for the algorithm application
       const newGrid = grid.slice();
       prepareGridForAlgorithms(newGrid);  
       //apply a-star pathfinder
       let visitedCellsInOrder = pathfinderAstar(newGrid, getStart(newGrid), getFinish(newGrid));
-      //get nodes of shortest path backtracking from finish node
-      let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      //update the grid state
-      setGrid(newGrid);
-      //visualize the algorithm
-      visualize(visitedCellsInOrder, shortestPathCells);
-    }
-  }
-
-  function visualizeBreadthFirstSearchPathfinder(){
-    if(!isVisualizing){
-      showMessage("Pathfinding Algorithm : Breadth-First-Search");
-      setIsVisualizing(true);
-      //prepare grid for the algorithm application
-      const newGrid = grid.slice();
-      prepareGridForAlgorithms(newGrid);  
-      //apply bfs pathfinder
-      let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
       let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
       //update the grid state
@@ -180,7 +210,7 @@ const Board = () => {
 
   function visualizeDepthFirstSearchMaze(){
 		if(!isVisualizing){
-      showMessage("Maze Generation Algorithm : Depth-First-Search");
+      setMessage("Maze Generation Algorithm : Depth-First-Search");
 			setIsVisualizing(true);
       clearGrid();
 
@@ -245,15 +275,13 @@ const Board = () => {
     }
   }
 
-  function showMessage(message){
-    document.getElementById("board-message").innerHTML = message;
-  }
-
   function handleSpeed(dropdownInfo){
 		setdropdownSpeedHeader(`Speed: ${dropdownInfo.option}`);
 		if(dropdownInfo.option === "Slow") setSpeed(700);
 		if(dropdownInfo.option === "Medium") setSpeed(50);
 		if(dropdownInfo.option === "Fast") setSpeed(10);
+    if(dropdownInfo.option === "Extra-Fast") setSpeed(5);
+
   }
 
   if (!grid) {
@@ -265,6 +293,7 @@ const Board = () => {
             <GenerateMazeDropdown handleDFSMaze={visualizeDepthFirstSearchMaze}
                                   handleRandomMaze={visualizeRandomMaze}/>
             <PathfindingAlgorithmDropdown handleBFSPathfinder={visualizeBreadthFirstSearchPathfinder}
+                                          handleDFSPathfinder={visualizeDepthFirstSearchPathfinder}
                                           handleAstarPathfinder={visualizeAstarPathfinder}
                                           handleDijkstraPathfinder={visualizeDijkstraPathfinder} />
             <Dropdown header={dropdownSpeedHeader}
@@ -272,8 +301,9 @@ const Board = () => {
                       handleDropdown={handleSpeed}/>
             <Button className={isVisualizing?"disabled":""} color="info" onClick={()=>clearGrid()}>Clear Grid</Button>
           </ButtonGroup>
-          <h1 id="board-message"> Maze Generator and Pathfinder Tool!</h1>
-          {isVisualizing?<h4>Board is being visualized...</h4>:<></>}
+          <h1 id="board-message-h1">{message}</h1>
+          <h4>{extraMessage}</h4>
+          <h4>{boardVisualizationMessage}</h4>
           <div className="grid">
             {grid.map((singleRow) => {
               return (
