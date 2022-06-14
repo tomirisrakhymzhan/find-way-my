@@ -12,6 +12,7 @@ import pathfinderBFS from "../../util/pathfinderBFS";
 import pathfinderDijkstra from "../../util/pathfinderDijkstra";
 import pathfinderAstar from "../../util/pathfinderAstar";
 import pathfinderDFS from "../../util/pathfinderDFS";
+import mazeRandom from "../../util/mazeRandom";
 //styles
 import "./Board.css";
 
@@ -30,10 +31,6 @@ const Board = () => {
   const [speed, setSpeed] = useState(5)
   const [grid, setGrid] = useState([]);
   const [isVisualizing, setIsVisualizing] = useState(false);
-  const [mouseIsPressed, setMouseIsPressed] = useState(false);
-  const [mainIsPressed, setMainIsPressed] = useState("");
-  const [start, setStart] = useState([START.y, START.x]);
-  const [finish, setFinish] = useState([FINISH.y, FINISH.x]);
   const timeoutID = useRef(null);
 
   useEffect(()=>{
@@ -66,14 +63,6 @@ const Board = () => {
       const newGrid = grid.slice();
       prepareGridForAlgorithms(newGrid);  
 
-      // try{
-      //   //apply bfs pathfinder
-      //   let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
-      //   //get nodes of shortest path backtracking from finish node
-      //   let shortestPathCells = getNodesInShortestPathOrder(getFinish(newGrid));
-      // }catch{
-
-      // }
       //apply bfs pathfinder
       let visitedCellsInOrder = pathfinderBFS(newGrid, getStart(newGrid), getFinish(newGrid));
       //get nodes of shortest path backtracking from finish node
@@ -274,6 +263,8 @@ const Board = () => {
 				let cell = visitedCellsInOrder[i];
         if (visitedCellsInOrder[i] === "end") {
           timeoutID.current = setTimeout(() => {
+            document.getElementById(`cell-${getStart(grid).y}-${getStart(grid).x}`).className = 'cell isStart';
+            document.getElementById(`cell-${getFinish(grid).y}-${getFinish(grid).x}`).className = 'cell isFinish';
             setIsVisualizing(false);
           }, speed * i);
         } 
@@ -285,7 +276,30 @@ const Board = () => {
 	}
 
   function visualizeRandomMaze() {
+    if(!isVisualizing){
+      setMessage("Maze Generation Algorithm : Randomized");
+			setIsVisualizing(true);
+      clearGrid();
 
+      // applying dfs maze generation algorithm
+      const newGrid = mazeRandom.createInitialBoardForRandomMaze(HEIGHT, WIDTH, START, FINISH);
+			let visitedCellsInOrder = mazeRandom.getRandomCells(newGrid);
+
+      //update the grid state
+      setGrid(newGrid);
+
+      //color randomized wall cells
+			for(let i=0; i<visitedCellsInOrder.length; i++){
+				let cell = visitedCellsInOrder[i];
+        if (visitedCellsInOrder[i] === "end") {
+            document.getElementById(`cell-${getStart(grid).y}-${getStart(grid).x}`).className = 'cell isStart';
+            document.getElementById(`cell-${getFinish(grid).y}-${getFinish(grid).x}`).className = 'cell isFinish';
+            setIsVisualizing(false);
+        } 
+					if(cell.isBaseWall ) document.getElementById(`cell-${cell.y}-${cell.x}`).className = 'cell isBaseWall'
+			}
+
+		}
   }
 
 //-------------------------------------------------General functionality-------------------------------------------------------//
@@ -328,109 +342,114 @@ const Board = () => {
   }
 //-------------------------------------------------Mouse events functionality-------------------------------------------------------//
 
-  function handleMouseDown(y, x){
-    const cell = grid[y][x];
-    if (cell.isStart === true && cell.isFinish === false) {
-      setMainIsPressed("start")      
-      cell.isStart = false;
-    }
-    if (cell.isStart === false && cell.isFinish === true) {
-      setMainIsPressed("finish")      
-      cell.isFinish = false;
-    }
-    if (mainIsPressed === "") {
-      const newGrid = gridWithWallToggled(grid, y, x);
-      setGrid(newGrid);
-      setMouseIsPressed(true);
-    }
-  }
-  function handleMouseEnter(y, x){
-    if (mainIsPressed === "start") {
-      const newGrid = gridDynamicNodes(grid, y, x, "start");
-      setGrid(newGrid);
-    }
-    if (mainIsPressed === "finish") {
-      const newGrid = gridDynamicNodes(grid, y, x, "finish");
-      setGrid(newGrid);
-    }
-    if (mouseIsPressed && mainIsPressed === "") {
-        const newGrid = gridWithWallToggled(grid, y, x);
-        setGrid(newGrid);
-        setMouseIsPressed(true);
-    }
-  }
+//   function handleMouseDown(y, x){
+//     if(!isVisualizing){
+//       const cell = grid[y][x];
+//       if (cell.isStart === true && cell.isFinish === false) {
+//         setMainIsPressed("start")      
+//         cell.isStart = false;
+//       }
+//       if (cell.isStart === false && cell.isFinish === true) {
+//         setMainIsPressed("finish")      
+//         cell.isFinish = false;
+//       }
+//       if (mainIsPressed === "") {
+//         const newGrid = gridWithWallToggled(grid, y, x);
+//         setGrid(newGrid);
+//         setMouseIsPressed(true);
+//       }
+//     }
+   
+//   }
+//   function handleMouseEnter(y, x){
+//     if(!isVisualizing){
+//       if (mainIsPressed === "start") {
+//         const newGrid = gridDynamicNodes(grid, y, x, "start");
+//         setGrid(newGrid);
+//       }
+//       if (mainIsPressed === "finish") {
+//         const newGrid = gridDynamicNodes(grid, y, x, "finish");
+//         setGrid(newGrid);
+//       }
+//       if (mouseIsPressed && mainIsPressed === "") {
+//           const newGrid = gridWithWallToggled(grid, y, x);
+//           setGrid(newGrid);
+//           setMouseIsPressed(true);
+//       }
+//     }
+//   }
 
-  function handleMouseUp(y, x){
-    if (mainIsPressed === "start") {
-      setMainIsPressed("");
-      const newGrid = gridDynamicNodes(grid, y, x, "start");
-      setMainIsPressed("");
-      setStart([y, x]);
-      setGrid(newGrid);
-    }
-    if (mainIsPressed === "finish") {
-      const newGrid = gridDynamicNodes(grid, y, x, "finish");
-      setMainIsPressed("");
-      setFinish([y, x]);
-      setGrid(newGrid);
-    }
-    setMouseIsPressed(false);
-  }
+//   function handleMouseUp(y, x){
+//     if (mainIsPressed === "start") {
+//       setMainIsPressed("");
+//       const newGrid = gridDynamicNodes(grid, y, x, "start");
+//       setMainIsPressed("");
+//       setStart([y, x]);
+//       setGrid(newGrid);
+//     }
+//     if (mainIsPressed === "finish") {
+//       const newGrid = gridDynamicNodes(grid, y, x, "finish");
+//       setMainIsPressed("");
+//       setFinish([y, x]);
+//       setGrid(newGrid);
+//     }
+//     setMouseIsPressed(false);
+//   }
 
-  function handleMouseLeave(y, x){
-    if (mainIsPressed === "")
-        return;
-    let newGrid = grid.slice();
-    const cell = newGrid[y][x];
-    if (mainIsPressed === "start") {
-        const newCell = {
-            ...cell,
-            isStart: false,
-            isBaseWall: false
-        }
-        newGrid[y][x] = newCell;
-    }
-    if (mainIsPressed === "finish") {
-        const newCell = {
-            ...cell,
-            isFinish: false,
-            isBaseWall: false
-        }
-        newGrid[y][x] = newCell;
-    }
-    setGrid(newGrid);
-  }
+//   function handleMouseLeave(y, x){
+//     if (mainIsPressed === "")
+//         return;
+//     let newGrid = grid.slice();
+//     const cell = newGrid[y][x];
+//     if (mainIsPressed === "start") {
+//         const newCell = {
+//             ...cell,
+//             isStart: false,
+//             isBaseWall: false
+//         }
+//         newGrid[y][x] = newCell;
+//     }
+//     if (mainIsPressed === "finish") {
+//         const newCell = {
+//             ...cell,
+//             isFinish: false,
+//             isBaseWall: false
+//         }
+//         newGrid[y][x] = newCell;
+//     }
+//     setGrid(newGrid);
+//   }
   
-  // updating the grid, when the walls are tiggered
-  function gridWithWallToggled(grid, y, x){
-    let newGrid = grid.slice();
-    const cell = newGrid[y][x];
-    const newCell = {
-        ...cell,
-        isBaseWall: !cell.isBaseWall
-    }
-    newGrid[y][x] = newCell;
-    return newGrid;
-  }
-  function gridDynamicNodes(grid, y, x, pos){
-    let newGrid = grid.slice();
-    const cell = newGrid[y][x];
-    if (pos === "start") {
-        const newCell = {
-            ...cell,
-            isStart: true
-        }
-        newGrid[y][x] = newCell;
-    }
-    if (pos === "finish") {
-        const newCell = {
-            ...cell,
-            isFinish: true
-        }
-        newGrid[y][x] = newCell;
-    }
-    return newGrid;
-}
+//   // updating the grid, when the walls are tiggered
+//   function gridWithWallToggled(grid, y, x){
+//     let newGrid = grid.slice();
+//     const cell = newGrid[y][x];
+//     const newCell = {
+//         ...cell,
+//         isBaseWall: (cell.isBaseWall&&cell.isWallToDestroy)?true:!cell.isBaseWall
+//     }
+//     newGrid[y][x] = newCell;
+//     return newGrid;
+//   }
+//   function gridDynamicNodes(grid, y, x, pos){
+//     let newGrid = grid.slice();
+//     const cell = newGrid[y][x];
+//     if (pos === "start") {
+//         const newCell = {
+//             ...cell,
+//             isStart: true
+//         }
+//         newGrid[y][x] = newCell;
+//     }
+//     if (pos === "finish") {
+//         const newCell = {
+//             ...cell,
+//             isFinish: true
+//         }
+//         newGrid[y][x] = newCell;
+//     }
+//     return newGrid;
+// }
 
 
 //-------------------------------------------------Returned component rendering-------------------------------------------------------//
@@ -455,21 +474,24 @@ const Board = () => {
           <h4>{extraMessage}</h4>
           <h4>{boardVisualizationMessage}</h4>
           <div className="grid">
-            {grid.map((singleRow) => {
+            {grid.map((singleRow, i) => {
               return (
-              <div className="grid-row">
-                {singleRow.map((singleBlock) => {
+              <div className="grid-row" key={i}>
+                {singleRow.map((singleBlock, i) => {
                 const {x, y, isFinish, isStart, isBaseWall} = singleBlock;
-                return <Cell  x={x}
+                return <Cell  
+                              key={i}
+                              x={x}
                               y={y}
                               isFinish={isFinish}
                               isStart={isStart}
                               isBaseWall={isBaseWall} 
-                              mouseIsPressed={mouseIsPressed}
-                              onMouseDown={(y, x) => handleMouseDown(y, x)}
-                              onMouseEnter={(y, x) => handleMouseEnter(y, x)}
-                              onMouseUp={(y,x) => handleMouseUp(y, x)}
-                              onMouseLeave={(y, x) => handleMouseLeave(y, x)}/>;
+                             // mouseIsPressed={mouseIsPressed}
+                              // onMouseDown={(y, x) => handleMouseDown(y, x)}
+                              // onMouseEnter={(y, x) => handleMouseEnter(y, x)}
+                              // onMouseUp={(y,x) => handleMouseUp(y, x)}
+                              // onMouseLeave={(y, x) => handleMouseLeave(y, x)}
+                        />;
                 })}
               </div>);
             })}

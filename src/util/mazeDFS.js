@@ -3,14 +3,14 @@ export function createInitialBoardForDFS (rows, cols, start, finish) {
     let grid = [];
     for (let i = 0; i < rows; i++) {
         grid.push([]);
-        if(i%2==0){
+        if(i%2===0){
             for (let j = 0; j < cols; j++) {
                 grid[i][j] = createCell(i, j, finish);
                 grid[i][j].isBaseWall = true;
             }
         }else{
             for (let j = 0; j < cols; j++) {
-                if(j%2==0){
+                if(j%2===0){
                     grid[i][j] = createCell(i, j, finish);
                     grid[i][j].isBaseWall = true;
 

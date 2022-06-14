@@ -20,9 +20,11 @@ export default function Dropdown(props){
            {header}
        </DropdownToggle>
        <DropdownMenu>
-       {options.map(option => (
-                    <DropdownItem  onClick={()=>handleDropdown({header, option})}>
-                    {option}
+       {options.map((option, i) => (
+                    <DropdownItem  key={i}
+                                   onClick={()=>handleDropdown({header, option})}
+                    >
+                        {option}
                     </DropdownItem>
                 ))}
        </DropdownMenu>
