@@ -1,18 +1,15 @@
 import React from 'react';
-//import TopElements from './components/TopPanel/';
-import Panel from './components/Panel/Panel';
-import Canvas from './components/Canvas/Canvas';
+import Board from "./components/Board/Board";
 import "bootswatch/dist/quartz/bootstrap.min.css";
-import './App.css';
+import "./App.css";
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
-    <div className='app'>
-
-    <Panel/>
-    <Canvas/>
+    <div className="app">
+      <Board />
+      <Footer/>
     </div>
-    
   );
 }
 

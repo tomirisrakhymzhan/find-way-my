@@ -5,12 +5,13 @@ export default function Dropdown(props){
     const options = props.options;
     const header = props.header;
     const [isOpen, setIsOpen] = React.useState(false) 
+    var handleDropdown = props.handleDropdown;
     function toggle(){
         setIsOpen(!isOpen)
     }
-    function generateMaze(option){
-        //call maze
-    }
+    // function handleDropdown(dropdownClickInfo){
+    //     props.handleDropdown();
+    // }
     return(
         <ButtonDropdown
         isOpen={isOpen}
@@ -19,9 +20,11 @@ export default function Dropdown(props){
            {header}
        </DropdownToggle>
        <DropdownMenu>
-       {options.map(option => (
-                    <DropdownItem  onClick={generateMaze(option)}>
-                    {option}
+       {options.map((option, i) => (
+                    <DropdownItem  key={i}
+                                   onClick={()=>handleDropdown({header, option})}
+                    >
+                        {option}
                     </DropdownItem>
                 ))}
        </DropdownMenu>
